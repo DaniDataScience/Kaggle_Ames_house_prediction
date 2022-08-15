@@ -1,0 +1,5 @@
+plotly
+pandas~=1.4.2
+numpy
+matplotlib
+xgboost
