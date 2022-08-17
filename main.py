@@ -1,9 +1,9 @@
-# This is a sample Python script.
-
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 import pandas as pd
+import matplotlib.pyplot as plt
 from preprocessing.create_validation_set import create_validation_set
+from preprocessing.data_names import COLS
+from preprocessing.data_exploration import view_data_distributions
+from preprocessing.transformation import data_transformation
 
 
 def print_hi(name):
@@ -14,7 +14,24 @@ def print_hi(name):
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     print_hi('PyCharm')
+
     # separate validation dataset
     create_validation_set(pd.read_csv("data/raw/full_dataset.csv"), 0.2)
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    # read training set
+    df_train_orig = pd.read_csv("data/input/df_train.csv")
+
+    # EXPLORE DATA
+    view_data_distributions(df_train_orig.copy())
+
+    # TRANSFORM DATA
+    df_train = data_transformation(df_train_orig)
+
+    # SAVE TO OUTPUT
+    df_train.to_csv("data/output/df_train_processed.csv", index=False)
+
+    # END
+    print("END")
+
+
+

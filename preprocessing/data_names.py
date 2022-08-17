@@ -3,7 +3,7 @@ from dataclasses import dataclass
 @dataclass
 class COLS:
     DROP_COL = []
-    ID = "id"
+    ID = "Id"
     TARGET = "SalePrice"
 
     # breakdown of features
@@ -95,8 +95,8 @@ class COLS:
 
     DATE_COLS = ["YearBuilt",
                  "YearRemodAdd",
-                 "GarageYrBlt",
-                 "YrSold"]
+                 "GarageYrBlt"
+                 ]
 
     NOMINAL_COLS = ["MSZoning",
                     "Street",
@@ -158,3 +158,9 @@ class COLS:
                     "Fence"
                     ]
 
+class NEW_COLS:
+    AGE = ["YearBuilt_age",
+           "YearRemodAdd_age",
+           "GarageYrBlt_age",
+           "YrSold_age"
+           ]

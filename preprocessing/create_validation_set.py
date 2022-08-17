@@ -11,7 +11,7 @@ def create_validation_set(df:'pd.DataFrame', ratio:float):
     df_valid = df.sample(frac=ratio, random_state=1)
     df_train = df.drop(df_valid.index)
 
-    df_valid.to_csv("data/df_valid.csv", index=False)
-    df_train.to_csv("data/df_train.csv", index=False)
+    df_valid.to_csv("data/input/df_valid.csv", index=False)
+    df_train.to_csv("data/input/df_train.csv", index=False)
 
     print("dataset slit into validation and test set with ratio of {}".format(ratio))
