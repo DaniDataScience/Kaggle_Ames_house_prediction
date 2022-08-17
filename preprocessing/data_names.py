@@ -27,6 +27,8 @@ class COLS:
                     "PoolArea",
                     "MiscVal",
                     "MoSold",
+                    "BedroomAbvGr",
+                    "KitchenAbvGr"
                     ]
 
     CATEGORICAL_COLS = ["MSSubClass",
@@ -68,8 +70,6 @@ class COLS:
                         "BsmtHalfBath",
                         "FullBath",
                         "HalfBath",
-                        "BedroomAbvGr",
-                        "KitchenAbvGr",
                         "KitchenQual",
                         "TotRmsAbvGrd",
                         "Functional",
@@ -98,7 +98,9 @@ class COLS:
                  "GarageYrBlt"
                  ]
 
-    NOMINAL_COLS = ["MSZoning",
+    NOMINAL_COLS = [
+                    "MSSubClass",
+                    "MSZoning",
                     "Street",
                     "Alley",
                     "LotShape",
@@ -111,14 +113,12 @@ class COLS:
                     "Condition2",
                     "BldgType",
                     "HouseStyle",
-                    "YearRemodAdd",
                     "RoofStyle",
                     "RoofMatl",
                     "Exterior1st",
                     "Exterior2nd",
                     "MasVnrType",
                     "Foundation",
-                    "BsmtExposure",
                     "Heating",
                     "CentralAir",
                     "Electrical",
@@ -127,24 +127,24 @@ class COLS:
                     "MiscFeature",
                     "MiscVal",
                     "SaleType",
-                    "SaleCondition"
+                    "SaleCondition",
+                    "Fence"
                     ]
 
-    ORDINAL_COLS = ["MSSubClass",
+    ORDINAL_COLS = [
                     "OverallQual,"
                     "OverallCond",
                     "ExterQual",
                     "ExterCond",
                     "BsmtQual",
                     "BsmtCond",
+                    "BsmtExposure",
                     "BsmtFinType1",
                     "HeatingQC",
                     "BsmtFullBath",
                     "BsmtHalfBath",
                     "FullBath",
                     "HalfBath",
-                    "Bedroom",
-                    "Kitchen",
                     "KitchenQual",
                     "TotRmsAbvGrd",
                     "Functional",
@@ -155,7 +155,6 @@ class COLS:
                     "GarageQual",
                     "GarageCond",
                     "PoolQC",
-                    "Fence"
                     ]
 
 class NEW_COLS:
