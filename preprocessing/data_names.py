@@ -19,6 +19,7 @@ class COLS:
                     "LowQualFinSF",
                     "GrLivArea",
                     "GarageArea",
+                    "GarageCars",
                     "WoodDeckSF",
                     "OpenPorchSF",
                     "EnclosedPorch",
@@ -28,7 +29,13 @@ class COLS:
                     "MiscVal",
                     "MoSold",
                     "BedroomAbvGr",
-                    "KitchenAbvGr"
+                    "KitchenAbvGr",
+                    "FullBath",
+                    "BsmtFullBath",
+                    "Fireplaces",
+                    "BsmtHalfBath",
+                    "HalfBath",
+                    "TotRmsAbvGrd"
                     ]
 
     CATEGORICAL_COLS = ["MSSubClass",
@@ -66,19 +73,12 @@ class COLS:
                         "HeatingQC",
                         "CentralAir",
                         "Electrical",
-                        "BsmtFullBath",
-                        "BsmtHalfBath",
-                        "FullBath",
-                        "HalfBath",
                         "KitchenQual",
-                        "TotRmsAbvGrd",
                         "Functional",
-                        "Fireplaces",
                         "FireplaceQu",
                         "GarageType",
                         "GarageYrBlt",
                         "GarageFinish",
-                        "GarageCars",
                         "GarageQual",
                         "GarageCond",
                         "PavedDrive",
@@ -87,7 +87,7 @@ class COLS:
                         "MiscFeature",
                         "SaleType",
                         "SaleCondition",
-                        "YrSold"
+                        "YrSold",
                         ]
 
     # breakdown of categorical columns
@@ -125,14 +125,12 @@ class COLS:
                     "GarageType",
                     "PavedDrive",
                     "MiscFeature",
-                    "MiscVal",
                     "SaleType",
                     "SaleCondition",
-                    "Fence"
                     ]
 
     ORDINAL_COLS = [
-                    "OverallQual,"
+                    "OverallQual",
                     "OverallCond",
                     "ExterQual",
                     "ExterCond",
@@ -140,26 +138,14 @@ class COLS:
                     "BsmtCond",
                     "BsmtExposure",
                     "BsmtFinType1",
+                    "BsmtFinType2",
                     "HeatingQC",
-                    "BsmtFullBath",
-                    "BsmtHalfBath",
-                    "FullBath",
-                    "HalfBath",
                     "KitchenQual",
-                    "TotRmsAbvGrd",
                     "Functional",
-                    "Fireplaces",
                     "FireplaceQu",
-                    "GarageYrBlt",
                     "GarageFinish",
                     "GarageQual",
                     "GarageCond",
                     "PoolQC",
+                    "Fence"
                     ]
-
-class NEW_COLS:
-    AGE = ["YearBuilt_age",
-           "YearRemodAdd_age",
-           "GarageYrBlt_age",
-           "YrSold_age"
-           ]

@@ -9,6 +9,7 @@ def drop_columns(df: "pd.DataFrame", columns: list):
     """
     drop not needed columns
     """
+    print("...drop_columns: applying function to drop columns {}...".format(columns))
     df_drop = df.copy()
     for column in columns:
         df_drop = df.drop(column, axis=1)
@@ -20,29 +21,28 @@ def age_transformer(df: "pd.DataFrame", columns: list, base_year: str):
     """
     subtract variables containing dates from date sold, to calculate age, and rou to decimals to create bins
     """
-    print("...applying function {} ...".format(__name__))
+    print("...age_transformer: applying function to ttransform years to age relative to year sold ...")
     df_age = df.copy()
     for column in columns:
         df_age[column + "_DECADE_BIN"] = df[base_year] - df[column]
         df_age[column + "_DECADE_BIN"] = df_age[column + "_DECADE_BIN"].apply(lambda x:
                                                                               round(x, -1) / 10
                                                                               )
-        COLS.NOMINAL_COLS.append(column + "_DECADE_BIN")  # adding new columns to list of column names
-        print("Created column {}".format(column + "_AGE"))
+        COLS.NUMERIC_COLS.append(column + "_DECADE_BIN")  # adding new columns to list of column names
+        print("Created column {}".format(column + "_DECADE_BIN"))
+        df_age = df_age.drop(column, axis=1)
+        print("Dropped column {}".format(column))
+
     return df_age
-
-
-def one_hot_encoding(df: "pd.DataFrame", columns):
-    df_one_hot = df.copy()
-    df_one_hot = pd.get_dummies(df_one_hot, columns=columns)
-    return df_one_hot
 
 
 def refactor_ordinals(df: "pd.DataFrame"):
     """
     Refactor ordinal categorical variables into numerical variables
     """
+    print("...refactor_ordinals: applying function for refactoring ordinal columns {}...".format(COLS.ORDINAL_COLS))
     df_refactor = df.copy()
+
 
     df_refactor["ExterQual"] = df_refactor["ExterQual"].apply(lambda x:
                                                               1 if x == "Po" else (
@@ -158,31 +158,63 @@ def refactor_ordinals(df: "pd.DataFrame"):
     return df_refactor
 
 
+def flag_missing_and_impute(df: "pd.DataFrame", columns: list, impute):
+    print("...flag_missing_and_impute: applying function for flagging and imputing columns {}...".format(columns))
+    df_flag = df.copy()
+    for column in columns:
+        df_flag.drop(column, axis=1, inplace=True)
+        df[column].fillna(impute, inplace=True)
+        df_flag[column] = df[column]
+        df_flag[column + "_missing_flag"] = df_flag[column].apply(lambda x: 1 if x == impute else 0)
+        print("created columns {}".format(column + "_missing_flag"))
+    return df_flag
+
+
+def create_impute_nominal_missing(df: "pd.DataFrame", columns: list, impute):
+    print("...create_impute_nominal_missing: applying function for imputing missing as a category for nominals {}...".format(columns))
+    df_missing_cat = df.copy()
+    df_missing_cat.drop(columns, axis=1, inplace=True)
+    for column in columns:
+        df[column].fillna(impute, inplace=True)
+    df_missing_cat[columns] = df[columns]
+
+
+def one_hot_encoding(df: "pd.DataFrame", columns):
+    print("...one_hot_encoding: applying function for one hot encoding of columns {}...".format(columns))
+    df_one_hot = pd.get_dummies(df, columns=columns)
+    return df_one_hot
+
+
 # --------------------------------------------------------------------------------------------------------------------
 
 def data_transformation(df: "pd.DataFrame"):
     # drop ID column
     df = drop_columns(df, [COLS.ID])
 
+    # DEALING WITH DATES
+
     # transform years to age, relative to year of sales
     df = age_transformer(df, COLS.DATE_COLS, COLS.BASE_YEAR)
 
-    # Drop year columns
-    df = drop_columns(df, COLS.DATE_COLS)
-
-    # one hot encoding
-    df = one_hot_encoding(df, COLS.NOMINAL_COLS)
+    # DEALING WITH ORDINALS
 
     # refactor ordinals
     df = refactor_ordinals(df)
 
-    # dealing with missing
+    # deal with missing ordinals
+    df = flag_missing_and_impute(df, COLS.ORDINAL_COLS, 0)
+
+    # DEALING WITH NOMINALS
+
+    # create category from missing in nominals
+    #df = create_impute_nominal_missing(df, COLS.NOMINAL_COLS, "No")
+
+    # one hot encoding
+    #df = one_hot_encoding(df, COLS.NOMINAL_COLS)
 
     # winsorizing
 
     # normalizing
-
-    # flagging zeros
 
     # checking missing again after transformations
     is_missing(df)

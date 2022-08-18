@@ -9,7 +9,7 @@ def is_missing(df: "pd.DataFrame"):
     :param df: dataframe to check
     :return: number of missing
     """
-    print("...applying function to check missing...")
+    print("...is_missing: applying function to check missing...")
     if df.isna().sum().sum() == 0:
         print("No missing values")
     else:
@@ -20,7 +20,7 @@ def numerical_distribution_hist(df: "pd.DataFrame", columns: list, plot_bool: bo
     """
     check the distribution of any numeric variable with a histogram
     """
-    print("...applying function to check histograms for {}...".format(columns))
+    print("...numerical_distribution_hist: applying function to check histograms for {}...".format(columns))
     if plot_bool == True:
         for column in columns:
             try:
@@ -38,7 +38,7 @@ def categorical_distribution_bar(df: "pd.DataFrame", columns: list, plot_bool: b
     """
     check the bar plot of any categorical variable
     """
-    print("...applying function to check bar plots")
+    print("...categorical_distribution_bar: applying function to check bar plots")
     if plot_bool == True:
         for column in columns:
             try:
