@@ -43,70 +43,82 @@ def refactor_ordinals(df: "pd.DataFrame"):
     print("...refactor_ordinals: applying function for refactoring ordinal columns {}...".format(COLS.ORDINAL_COLS))
     df_refactor = df.copy()
 
-
-    df_refactor["ExterQual"] = df_refactor["ExterQual"].apply(lambda x:
+    df_refactor.drop(["ExterQual"], axis=1)
+    df_refactor["ExterQual"] = df["ExterQual"].apply(lambda x:
                                                               1 if x == "Po" else (
                                                                   2 if x == "Fa" else (
                                                                       3 if x == "TA" else (
                                                                           4 if x == "Gd" else (
                                                                               5 if x == "Ex" else -1)))))
-    df_refactor["ExterCond"] = df_refactor["ExterCond"].apply(lambda x:
+    df_refactor.drop(["ExterCond"], axis=1)
+    df_refactor["ExterCond"] = df["ExterCond"].apply(lambda x:
                                                               1 if x == "Po" else (
                                                                   2 if x == "Fa" else (
                                                                       3 if x == "TA" else (
                                                                           4 if x == "Gd" else (
                                                                               5 if x == "Ex" else -1)))))
-
-    df_refactor["BsmtQual"] = df_refactor["BsmtQual"].apply(lambda x:
+    df["BsmtQual"].fillna("missing", inplace=True)
+    df_refactor.drop(["BsmtQual"], axis=1)
+    df_refactor["BsmtQual"] = df["BsmtQual"].apply(lambda x:
                                                             1 if x == "Po" else (
                                                                 2 if x == "Fa" else (
                                                                     3 if x == "TA" else (
                                                                         4 if x == "Gd" else (
                                                                             5 if x == "Ex" else (
-                                                                                0 if np.NaN else -1))))))
-    df_refactor["BsmtCond"] = df_refactor["BsmtCond"].apply(lambda x:
+                                                                                np.nan if "missing" else -1))))))
+    df["BsmtCond"].fillna("missing", inplace=True)
+    df_refactor.drop(["BsmtCond"], axis=1)
+    df_refactor["BsmtCond"] = df["BsmtCond"].apply(lambda x:
                                                             1 if x == "Po" else (
                                                                 2 if x == "Fa" else (
                                                                     3 if x == "TA" else (
                                                                         4 if x == "Gd" else (
                                                                             5 if x == "Ex" else (
-                                                                                0 if np.NaN else -1))))))
-    df_refactor["BsmtExposure"] = df_refactor["BsmtExposure"].apply(lambda x:
-                                                                    1 if x == "Po" else (
-                                                                        2 if x == "Fa" else (
-                                                                            3 if x == "TA" else (
+                                                                                np.nan if "missing" else -1))))))
+    df["BsmtExposure"].fillna("missing", inplace=True)
+    df_refactor.drop(["BsmtExposure"], axis=1)
+    df_refactor["BsmtExposure"] = df["BsmtExposure"].apply(lambda x:
+                                                                    1 if x == "No" else (
+                                                                        2 if x == "Mn" else (
+                                                                            3 if x == "Av" else (
                                                                                 4 if x == "Gd" else (
-                                                                                    0 if np.NaN else -1)))))
-
-    df_refactor["BsmtFinType1"] = df_refactor["BsmtFinType1"].apply(lambda x:
+                                                                                    np.nan if "missing" else -1)))))
+    df["BsmtFinType1"].fillna("missing", inplace=True)
+    df_refactor.drop(["BsmtFinType1"], axis=1)
+    df_refactor["BsmtFinType1"] = df["BsmtFinType1"].apply(lambda x:
                                                                     1 if x == "GLQ" else (
                                                                         2 if x == "ALQ" else (
                                                                             3 if x == "BLQ" else (
                                                                                 4 if x == "Rec" else (
                                                                                     5 if x == "LwQ" else (
                                                                                         6 if x == "Unf" else (
-                                                                                            0 if np.NaN else -1)))))))
-    df_refactor["BsmtFinType2"] = df_refactor["BsmtFinType2"].apply(lambda x:
+                                                                                            np.nan if "missing" else -1)))))))
+    df["BsmtFinType2"].fillna("missing", inplace=True)
+    df_refactor.drop(["BsmtFinType2"], axis=1)
+    df_refactor["BsmtFinType2"] = df["BsmtFinType2"].apply(lambda x:
                                                                     1 if x == "GLQ" else (
                                                                         2 if x == "ALQ" else (
                                                                             3 if x == "BLQ" else (
                                                                                 4 if x == "Rec" else (
                                                                                     5 if x == "LwQ" else (
                                                                                         6 if x == "Unf" else (
-                                                                                            0 if np.NaN else -1)))))))
-    df_refactor["HeatingQC"] = df_refactor["HeatingQC"].apply(lambda x:
+                                                                                            np.nan if "missing" else -1)))))))
+    df_refactor.drop(["HeatingQC"], axis=1)
+    df_refactor["HeatingQC"] = df["HeatingQC"].apply(lambda x:
                                                               1 if x == "Po" else (
                                                                   2 if x == "Fa" else (
                                                                       3 if x == "TA" else (
                                                                           4 if x == "Gd" else (
                                                                               5 if x == "Ex" else -1)))))
-    df_refactor["KitchenQual"] = df_refactor["KitchenQual"].apply(lambda x:
+    df_refactor.drop(["KitchenQual"], axis=1)
+    df_refactor["KitchenQual"] = df["KitchenQual"].apply(lambda x:
                                                                   1 if x == "Po" else (
                                                                       2 if x == "Fa" else (
                                                                           3 if x == "TA" else (
                                                                               4 if x == "Gd" else (
                                                                                   5 if x == "Ex" else -1)))))
-    df_refactor["Functional"] = df_refactor["Functional"].apply(lambda x:
+    df_refactor.drop(["Functional"], axis=1)
+    df_refactor["Functional"] = df["Functional"].apply(lambda x:
                                                                 1 if x == "Typ" else (
                                                                     2 if x == "Min1" else (
                                                                         3 if x == "Min2" else (
@@ -116,44 +128,56 @@ def refactor_ordinals(df: "pd.DataFrame"):
                                                                                         7 if x == "Sev" else (
                                                                                             8 if x == "Sal" else -1)))))
                                                                     )))
-    df_refactor["FireplaceQu"] = df_refactor["FireplaceQu"].apply(lambda x:
+    df["FireplaceQu"].fillna("missing", inplace=True)
+    df_refactor.drop(["FireplaceQu"], axis=1)
+    df_refactor["FireplaceQu"] = df["FireplaceQu"].apply(lambda x:
                                                                   1 if x == "Po" else (
                                                                       2 if x == "Fa" else (
                                                                           3 if x == "TA" else (
                                                                               4 if x == "Gd" else (
                                                                                   5 if x == "Ex" else (
-                                                                                      0 if np.NaN else -1))))))
-    df_refactor["GarageFinish"] = df_refactor["GarageFinish"].apply(lambda x:
+                                                                                      np.nan if "missing" else -1))))))
+    df["GarageFinish"].fillna("missing", inplace=True)
+    df_refactor.drop(["GarageFinish"], axis=1)
+    df_refactor["GarageFinish"] = df["GarageFinish"].apply(lambda x:
                                                                     1 if x == "Fin" else (
                                                                         2 if x == "RFn" else (
-                                                                            3 if x == "unf" else (
-                                                                                0 if x == np.NaN else -1))))
-    df_refactor["GarageQual"] = df_refactor["GarageQual"].apply(lambda x:
+                                                                            3 if x == "Unf" else (
+                                                                                np.nan if x == "missing" else -1))))
+    df["GarageQual"].fillna("missing", inplace=True)
+    df_refactor.drop(["GarageQual"], axis=1)
+    df_refactor["GarageQual"] = df["GarageQual"].apply(lambda x:
                                                                 1 if x == "Po" else (
                                                                     2 if x == "Fa" else (
                                                                         3 if x == "TA" else (
                                                                             4 if x == "Gd" else (
                                                                                 5 if x == "Ex" else (
-                                                                                    0 if x == np.NaN else -1))))))
-    df_refactor["GarageCond"] = df_refactor["GarageCond"].apply(lambda x:
+                                                                                    np.nan if x == "missing" else -1))))))
+    df["GarageCond"].fillna("missing", inplace=True)
+    df_refactor.drop(["GarageCond"], axis=1)
+    df_refactor["GarageCond"] = df["GarageCond"].apply(lambda x:
                                                                 1 if x == "Po" else (
                                                                     2 if x == "Fa" else (
                                                                         3 if x == "TA" else (
                                                                             4 if x == "Gd" else (
                                                                                 5 if x == "Ex" else (
-                                                                                    0 if x == np.NaN else -1))))))
-    df_refactor["PoolQC"] = df_refactor["PoolQC"].apply(lambda x:
+                                                                                    np.nan if x == "missing" else -1))))))
+    df["PoolQC"].fillna("missing", inplace=True)
+    df_refactor.drop(["PoolQC"], axis=1)
+    df_refactor["PoolQC"] = df["PoolQC"].apply(lambda x:
                                                         1 if x == "Fa" else (
                                                             2 if x == "TA" else (
                                                                 3 if x == "Gd" else (
                                                                     4 if x == "Ex" else (
-                                                                        0 if x == np.NaN else -1)))))
-    df_refactor["Fence"] = df_refactor["Fence"].apply(lambda x:
+                                                                        np.nan if x == "missing" else -1)))))
+    df["Fence"].fillna("missing", inplace=True)
+    df_refactor.drop(["Fence"], axis=1)
+    df_refactor["Fence"] = df["Fence"].apply(lambda x:
                                                       1 if x == "MnWw" else (
                                                           2 if x == "GdW" else (
                                                               3 if x == "MnPrv" else (
                                                                   4 if x == "GdPrv" else (
-                                                                      0 if x == np.NaN else -1)))))
+                                                                      np.nan if x == "missing" else -1)))))
 
     return df_refactor
 
@@ -167,6 +191,7 @@ def flag_missing_and_impute(df: "pd.DataFrame", columns: list, impute):
         df_flag[column] = df[column]
         df_flag[column + "_missing_flag"] = df_flag[column].apply(lambda x: 1 if x == impute else 0)
         print("created columns {}".format(column + "_missing_flag"))
+        df_flag[column] = df_flag[column].astype(int)
     return df_flag
 
 

@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from preprocessing.create_validation_set import create_validation_set
@@ -16,16 +17,16 @@ if __name__ == '__main__':
     print_hi('PyCharm')
 
     # separate validation dataset
-    create_validation_set(pd.read_csv("data/raw/full_dataset.csv"), 0.2)
+    create_validation_set(pd.read_csv("data/raw/full_dataset.csv", na_values="nan"), 0.2)
 
     # read training set
-    df_train_orig = pd.read_csv("data/input/df_train.csv")
+    df_train_orig = pd.read_csv("data/input/df_train.csv", na_values="nan")
 
     # EXPLORE DATA
     view_data_distributions(df_train_orig.copy())
 
     # TRANSFORM DATA
-    df_train = data_transformation(df_train_orig)
+    df_train = data_transformation(df_train_orig.copy())
 
     # SAVE TO OUTPUT
     df_train.to_csv("data/output/df_train_processed.csv", index=False)
