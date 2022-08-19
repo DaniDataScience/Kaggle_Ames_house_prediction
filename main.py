@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from preprocessing.create_validation_set import create_validation_set
 from preprocessing.data_names import COLS
 from preprocessing.data_exploration import view_data_distributions
+from preprocessing.data_exploration import view_conditional_mean
 from preprocessing.transformation import data_transformation
 
 
@@ -23,7 +24,12 @@ if __name__ == '__main__':
     df_train_orig = pd.read_csv("data/input/df_train.csv", na_values="nan")
 
     # EXPLORE DATA
-    view_data_distributions(df_train_orig.copy())
+    view_data_distributions(df_train_orig, plot_bool=False)
+
+    # DEAL WITH MISSING
+    df_train = df_train_orig.fillna("missing")
+
+    view_conditional_mean(df_train, df_train.columns, plot_bool=True)
 
     # TRANSFORM DATA
     df_train = data_transformation(df_train_orig.copy())
@@ -33,6 +39,3 @@ if __name__ == '__main__':
 
     # END
     print("END")
-
-
-

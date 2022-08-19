@@ -4,6 +4,21 @@ from preprocessing.data_names import COLS
 from preprocessing.data_exploration import is_missing
 import pandas as pd
 
+def refactor_NaN(df: "pd.DataFrame", categorical_refactor: str, numeric_refactor: float):
+    """
+    refactor missing either into categorical value for missing or into zero
+    """
+    print("...refactor_NaN: refactoring NaN...")
+    df_temp = df.copy()
+    for column in df.columns:
+        if column in ["LotFrontage"]:
+            df_temp[column].fillna(numeric_refactor, inplace=True)
+            print("refactored column {} to 0".format(column))
+        if column in ["MasVnrType", "Alley", "MasVnrArea","BsmtQual","BsmtCond","BsmtExposure","BsmtFinType1","BsmtFinType2","Electrical","FireplaceQu","GarageTpye","GarageYrBlt","GarageFinish","GarageQual","GarageCond","PoolQC","Fence","MiscFeature"]:
+            df_temp[column].fillna(categorical_refactor, inplace=True)
+            print("refactored column {} to None".format(categorical_refactor))
+    return df_temp
+
 
 def drop_columns(df: "pd.DataFrame", columns: list):
     """
@@ -230,7 +245,11 @@ def one_hot_encoding(df: "pd.DataFrame", columns):
 
 # --------------------------------------------------------------------------------------------------------------------
 
+def deal_with_missing(df: "pd.DataFrame"):
+    df = refactor_NaN(df, "None", 0)
+
 def data_transformation(df: "pd.DataFrame"):
+
     # drop ID column
     df = drop_columns(df, [COLS.ID])
 
@@ -256,7 +275,7 @@ def data_transformation(df: "pd.DataFrame"):
     df = create_impute_nominal_missing(df, COLS.NOMINAL_COLS, "None")
 
     # one hot encoding
-    #df = one_hot_encoding(df, COLS.NOMINAL_COLS)
+    df = one_hot_encoding(df, COLS.NOMINAL_COLS)
 
     # winsorizing
 

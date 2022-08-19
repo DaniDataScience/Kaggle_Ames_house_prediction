@@ -52,13 +52,36 @@ def categorical_distribution_bar(df: "pd.DataFrame", columns: list, plot_bool: b
             except KeyError:
                 print("{} column not in dataset".format(column))
     else:
-        print("Plotting turne off")
+        print("Plotting turn off")
+
+
+def view_conditional_mean(df: "pd.DataFrame", columns: list, plot_bool: bool):
+    """
+    Creating conditional mean graphs
+    """
+    print("... creating conditional mean graphs and scatterplots")
+    if plot_bool == True:
+        for column in columns:
+            df_temp = df.groupby(column).agg(["mean", "count"]).reset_index()
+            x = df_temp[column].tolist()
+            y = df_temp["SalePrice"]["mean"]
+            size = df_temp["SalePrice"]["count"]
+
+            plt.scatter(
+                    x=x,
+                    y=y,
+                    s=size)
+            plt.title(column)
+            plt.ylim(bottom=0)
+            plt.show()
+    else:
+        print("Plotting turn off")
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
 
-def view_data_distributions(df: "pd.DataFrame"):
+def view_data_distributions(df: "pd.DataFrame", plot_bool: bool):
     # show basic info
     print("...describe dataset..")
     print(df.describe)
@@ -71,12 +94,12 @@ def view_data_distributions(df: "pd.DataFrame"):
     is_missing(df)
 
     # check target variable hist
-    numerical_distribution_hist(df, [COLS.TARGET], plot_bool=False)
+    numerical_distribution_hist(df, [COLS.TARGET], plot_bool=plot_bool)
 
     # check numerical variable hist
-    numerical_distribution_hist(df, COLS.NUMERIC_COLS, plot_bool=False)
+    numerical_distribution_hist(df, COLS.NUMERIC_COLS, plot_bool=plot_bool)
 
     # check categorical variable bar plot
-    categorical_distribution_bar(df, COLS.CATEGORICAL_COLS, plot_bool=False)
+    categorical_distribution_bar(df, COLS.CATEGORICAL_COLS, plot_bool=plot_bool)
 
     print("--- end of data exploration ---")
