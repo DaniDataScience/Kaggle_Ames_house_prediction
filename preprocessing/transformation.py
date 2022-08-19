@@ -14,27 +14,41 @@ def drop_columns(df: "pd.DataFrame", columns: list):
     for column in columns:
         df_drop = df.drop(column, axis=1)
         print("dropped column {}".format(column))
+
     return df_drop
+
+def GarageYrBlt_refactoring(df: "pd.DataFrame"):
+    """
+    Transform garage year built to a flag variable determining if garage was built with house or later"
+    """
+    print("...GarageYrBlt_refactoring: applying function to transform GarageYrBlt ...")
+    df_temp = df.copy()
+    df_temp['Garage_BwH'] = np.where(df["YearBuilt"] == df["GarageYrBlt"], 1, 0)
+    df_temp = df_temp.drop("GarageYrBlt", axis=1)
+    return df_temp
 
 
 def age_transformer(df: "pd.DataFrame", columns: list, base_year: str):
     """
     subtract variables containing dates from date sold, to calculate age, and rou to decimals to create bins
     """
-    print("...age_transformer: applying function to ttransform years to age relative to year sold ...")
+    print("...age_transformer: applying function to transform years to age relative to year sold ...")
     df_age = df.copy()
     for column in columns:
-        df_age[column + "_DECADE_BIN"] = df[base_year] - df[column]
-        df_age[column + "_DECADE_BIN"] = df_age[column + "_DECADE_BIN"].apply(lambda x:
-                                                                              round(x, -1) / 10
-                                                                              )
-        COLS.NUMERIC_COLS.append(column + "_DECADE_BIN")  # adding new columns to list of column names
-        print("Created column {}".format(column + "_DECADE_BIN"))
-        df_age = df_age.drop(column, axis=1)
-        print("Dropped column {}".format(column))
+        try:
+            df_age[column + "_DECADE_BIN"] = df[base_year] - df[column]
+            df_age[column + "_DECADE_BIN"] = df_age[column + "_DECADE_BIN"].apply(lambda x:
+                                                                                  round(x, -1) / 10
+                                                                                  )
+            COLS.NUMERIC_COLS.append(column + "_DECADE_BIN")  # adding new columns to list of column names
+            print("Created column {}".format(column + "_DECADE_BIN"))
+            df_age = df_age.drop(column, axis=1)
+            print("Dropped column {}".format(column))
+            df_age[column + "_DECADE_BIN"] = df_age[column + "_DECADE_BIN"].astype(int)
+        except KeyError:
+            print("Columns {} has already been dropped or missing".format(column))
 
     return df_age
-
 
 def refactor_ordinals(df: "pd.DataFrame"):
     """
@@ -196,12 +210,16 @@ def flag_missing_and_impute(df: "pd.DataFrame", columns: list, impute):
 
 
 def create_impute_nominal_missing(df: "pd.DataFrame", columns: list, impute):
+    """
+    imputing a custom value for missing nomincal categorical variables, to prepare one hot encoding
+    """
     print("...create_impute_nominal_missing: applying function for imputing missing as a category for nominals {}...".format(columns))
     df_missing_cat = df.copy()
     df_missing_cat.drop(columns, axis=1, inplace=True)
     for column in columns:
         df[column].fillna(impute, inplace=True)
     df_missing_cat[columns] = df[columns]
+    return df_missing_cat
 
 
 def one_hot_encoding(df: "pd.DataFrame", columns):
@@ -218,6 +236,9 @@ def data_transformation(df: "pd.DataFrame"):
 
     # DEALING WITH DATES
 
+    # transform garage year built
+    df = GarageYrBlt_refactoring(df)
+
     # transform years to age, relative to year of sales
     df = age_transformer(df, COLS.DATE_COLS, COLS.BASE_YEAR)
 
@@ -232,7 +253,7 @@ def data_transformation(df: "pd.DataFrame"):
     # DEALING WITH NOMINALS
 
     # create category from missing in nominals
-    #df = create_impute_nominal_missing(df, COLS.NOMINAL_COLS, "No")
+    df = create_impute_nominal_missing(df, COLS.NOMINAL_COLS, "None")
 
     # one hot encoding
     #df = one_hot_encoding(df, COLS.NOMINAL_COLS)
