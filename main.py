@@ -5,6 +5,7 @@ from preprocessing.create_validation_set import create_validation_set
 from preprocessing.data_names import COLS
 from preprocessing.data_exploration import view_data_distributions
 from preprocessing.data_exploration import view_conditional_mean
+from preprocessing.transformation import deal_with_missing
 from preprocessing.transformation import data_transformation
 
 
@@ -21,18 +22,19 @@ if __name__ == '__main__':
     create_validation_set(pd.read_csv("data/raw/full_dataset.csv", na_values="nan"), 0.2)
 
     # read training set
-    df_train_orig = pd.read_csv("data/input/df_train.csv", na_values="nan")
-
-    # EXPLORE DATA
-    view_data_distributions(df_train_orig, plot_bool=False)
+    df_train = pd.read_csv("data/input/df_train.csv", na_values="nan")
 
     # DEAL WITH MISSING
-    df_train = df_train_orig.fillna("missing")
+    df_train = deal_with_missing(df_train)
 
-    view_conditional_mean(df_train, df_train.columns, plot_bool=True)
+    # EXPLORE DATA
+    view_data_distributions(df_train, plot_bool=False)
+
+    # VIEW DISTRIBUTIONS
+    view_conditional_mean(df_train, df_train.columns, plot_bool=False)
 
     # TRANSFORM DATA
-    df_train = data_transformation(df_train_orig.copy())
+    df_train = data_transformation(df_train)
 
     # SAVE TO OUTPUT
     df_train.to_csv("data/output/df_train_processed.csv", index=False)

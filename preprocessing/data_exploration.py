@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 from preprocessing.data_names import COLS
+import warnings
+
 
 
 
@@ -59,21 +61,38 @@ def view_conditional_mean(df: "pd.DataFrame", columns: list, plot_bool: bool):
     """
     Creating conditional mean graphs
     """
+    warnings.simplefilter(action='ignore', category=FutureWarning)
     print("... creating conditional mean graphs and scatterplots")
+    df.info()
     if plot_bool == True:
         for column in columns:
-            df_temp = df.groupby(column).agg(["mean", "count"]).reset_index()
-            x = df_temp[column].tolist()
-            y = df_temp["SalePrice"]["mean"]
-            size = df_temp["SalePrice"]["count"]
+            # if numeric
+            if df[column].dtype == ("int64" or "int32" or float):
+                print("{} ({})".format(column, df[column].dtype))
+                x = df[column]
+                y = df["SalePrice"]
 
-            plt.scatter(
+                plt.scatter(
                     x=x,
-                    y=y,
-                    s=size)
-            plt.title(column)
-            plt.ylim(bottom=0)
-            plt.show()
+                    y=y)
+                plt.title(column)
+                plt.show()
+            # if categorical
+            if df[column].dtype == object:
+                print("{} ({})".format(column, df[column].dtype))
+                df_mean = df.groupby(column).agg(["mean"]).reset_index()
+                df_count = df.groupby(column).agg(["count"]).reset_index()
+                x = df_mean[column].tolist()
+                y = df_mean["SalePrice"]["mean"]
+                size = df_count["SalePrice"]["count"]
+
+                plt.scatter(
+                        x=x,
+                        y=y,
+                        s=size)
+                plt.title(column)
+                plt.ylim(bottom=0)
+                plt.show()
     else:
         print("Plotting turn off")
 
@@ -82,6 +101,8 @@ def view_conditional_mean(df: "pd.DataFrame", columns: list, plot_bool: bool):
 
 
 def view_data_distributions(df: "pd.DataFrame", plot_bool: bool):
+    print("--- START VIEW DISTRIBUTIONS ---")
+
     # show basic info
     print("...describe dataset..")
     print(df.describe)
@@ -102,4 +123,4 @@ def view_data_distributions(df: "pd.DataFrame", plot_bool: bool):
     # check categorical variable bar plot
     categorical_distribution_bar(df, COLS.CATEGORICAL_COLS, plot_bool=plot_bool)
 
-    print("--- end of data exploration ---")
+    print("--- END VIEW DISTRIBUTIONS ---")
