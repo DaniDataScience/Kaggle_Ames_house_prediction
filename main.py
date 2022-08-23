@@ -1,8 +1,9 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from preprocessing.create_validation_set import create_validation_set
 from preprocessing.data_names import COLS
+from preprocessing.preparing_datasets import create_full_dataset
+from preprocessing.preparing_datasets import split_into_tran_valid_prediction_set
 from preprocessing.data_exploration import view_data_distributions
 from preprocessing.data_exploration import view_conditional_mean
 from preprocessing.transformation import deal_with_missing
@@ -18,26 +19,30 @@ def print_hi(name):
 if __name__ == '__main__':
     print_hi('PyCharm')
 
-    # separate validation dataset
-    create_validation_set(pd.read_csv("data/raw/full_dataset.csv", na_values="nan"), 0.2)
+    # COMBINE TEST AND TRAIN SET
+    create_full_dataset()
 
-    # read training set
-    df_train = pd.read_csv("data/input/df_train.csv", na_values="nan")
+    # READ DATASET
+    df_full = pd.read_csv("data/processing/input/train_and_prediction_set.csv")
 
     # DEAL WITH MISSING
-    df_train = deal_with_missing(df_train)
+    df_full = deal_with_missing(df_full)
 
     # EXPLORE DATA
-    view_data_distributions(df_train, plot_bool=False)
+    view_data_distributions(df_full, plot_bool=False)
 
     # VIEW DISTRIBUTIONS
-    view_conditional_mean(df_train, df_train.columns, plot_bool=False)
+    view_conditional_mean(df_full, df_full.columns, plot_bool=False)
 
     # TRANSFORM DATA
-    df_train = data_transformation(df_train)
+    df_full = data_transformation(df_full)
 
     # SAVE TO OUTPUT
-    df_train.to_csv("data/output/df_train_processed.csv", index=False)
+    df_full.to_csv("data/processing/output/df_processed.csv", index=False)
+
+    # SPLIT INTO TRAIN AND VALIDATION AND PREDICTION SET
+    split_into_tran_valid_prediction_set(df_full)
+
 
     # END
     print("END")

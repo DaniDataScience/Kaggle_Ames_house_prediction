@@ -13,13 +13,15 @@ def refactor_NaN_and_flag(df: "pd.DataFrame", categorical_refactor: str, numeric
     print("...refactor_NaN: refactoring NaN...")
     df_temp = df.copy()
     for column in df.columns:
+
         # numeric refactor
         if column in ["LotFrontage", "MasVnrArea"]:
             df_temp[column].fillna(numeric_refactor, inplace=True)
-            print("refactored column {} to 0".format(column))
+            print("refactored Nan values in column {} to 0".format(column))
             df_temp[column + "_missing_flag"] = df_temp[column].apply(lambda x: 1 if x == numeric_refactor else 0)
             print("created columns {}".format(column + "_missing_flag"))
             df_temp[column + "_missing_flag"] = df_temp[column + "_missing_flag"].astype(int)
+
         # caregorical refactor
         if column in ["MasVnrType", "Alley", "BsmtQual","BsmtCond","BsmtExposure","BsmtFinType1",
                       "BsmtFinType2","Electrical","FireplaceQu","GarageType","GarageYrBlt","GarageFinish","GarageQual",
@@ -29,6 +31,13 @@ def refactor_NaN_and_flag(df: "pd.DataFrame", categorical_refactor: str, numeric
             df_temp[column + "_missing_flag"] = df_temp[column].apply(lambda x: 1 if x == categorical_refactor else 0)
             print("created columns {}".format(column + "_missing_flag"))
             df_temp[column + "_missing_flag"] = df_temp[column + "_missing_flag"].astype(int)
+
+        # for missing values in prediction set
+        if column in ["MSZoning","Utilities","Exterior1st","Exterior2nd","BsmtFinSF1","BsmtFinSF2","BsmtUnfSF",
+                      "TotalBsmtSF","BsmtFullBath","BsmtHalfBath","KitchenQual","Functional","GarageCars",
+                      "GarageArea","SaleType"]:
+            df_temp[column].fillna(df[column].mode()[0],inplace=True)
+            print("imputed missing for {}".format(column))
     return df_temp
 
 
@@ -40,6 +49,7 @@ def GarageYrBlt_refactoring(df: "pd.DataFrame"):
     df_temp = df.copy()
     df_temp['Garage_BwH'] = np.where(df["YearBuilt"] == df["GarageYrBlt"], 1, 0)
     df_temp = df_temp.drop("GarageYrBlt", axis=1)
+    print("GarageYrBlt dropped, Garage_BwH created")
     return df_temp
 
 
@@ -75,7 +85,7 @@ def age_transformer(df: "pd.DataFrame", columns: list, base_year: str):
             df_age[column + "_DECADE_BIN"] = df_age[column + "_DECADE_BIN"].astype(int)
         except KeyError:
             print("Columns {} has already been dropped or missing".format(column))
-    drop_columns(df_age, [COLS.BASE_YEAR])
+    df_age = drop_columns(df_age, [COLS.BASE_YEAR])
 
     return df_age
 
@@ -256,7 +266,7 @@ def normalizing(df):
 # --------------------------------------------------------------------------------------------------------------------
 
 def deal_with_missing(df: "pd.DataFrame"):
-    print("--- START OF DEA WITH MISSING ---")
+    print("--- START OF DEAL WITH MISSING ---")
 
     # refactor missing
     df = refactor_NaN_and_flag(df, "None", 0)
@@ -299,9 +309,6 @@ def data_transformation(df: "pd.DataFrame"):
 
     # checking missing again after transformations
     is_missing(df)
-
-    # remove target variable
-    df = drop_columns(df, [COLS.TARGET])
 
     print("--- END OF DATA TRANSFORMATION ---")
 

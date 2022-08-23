@@ -61,6 +61,7 @@ def view_conditional_mean(df: "pd.DataFrame", columns: list, plot_bool: bool):
     """
     Creating conditional mean graphs
     """
+    print("--- START VIEW CONDITIONAL MEAN ---")
     warnings.simplefilter(action='ignore', category=FutureWarning)
     print("... creating conditional mean graphs and scatterplots")
     df.info()
@@ -95,6 +96,7 @@ def view_conditional_mean(df: "pd.DataFrame", columns: list, plot_bool: bool):
                 plt.show()
     else:
         print("Plotting turn off")
+    print("--- END VIEW CONDITIONAL MEAN ---")
 
 
 # --------------------------------------------------------------------------------------------------------------------
