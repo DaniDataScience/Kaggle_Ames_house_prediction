@@ -3,11 +3,14 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from preprocessing.data_names import COLS
 from preprocessing.preparing_datasets import create_full_dataset
-from preprocessing.preparing_datasets import split_into_tran_valid_prediction_set
 from preprocessing.data_exploration import view_data_distributions
 from preprocessing.data_exploration import view_conditional_mean
 from preprocessing.transformation import deal_with_missing
 from preprocessing.transformation import data_transformation
+from modelling.model_prep import prepare_model
+from sklearn.model_selection import StratifiedKFold
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.model_selection import GridSearchCV
 
 
 def print_hi(name):
@@ -40,9 +43,16 @@ if __name__ == '__main__':
     # SAVE TO OUTPUT
     df_full.to_csv("data/processing/output/df_processed.csv", index=False)
 
-    # SPLIT INTO TRAIN AND VALIDATION AND PREDICTION SET
-    split_into_tran_valid_prediction_set(df_full)
+    # PREPARE MODELING
+    X_train, X_holdout, y_train, y_holdout = prepare_model(df_full)
 
+    print(y_train)
+    print(X_train)
+
+    rfr = RandomForestRegressor()
+    rfr.fit(X_train, y_train)
+    score = rfr.score(X_train, y_train)
+    print("R-squared:", score)
 
     # END
     print("END")
