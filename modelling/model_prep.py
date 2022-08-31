@@ -1,3 +1,5 @@
+import pandas as pd
+import numpy as np
 import sklearn.metrics
 from sklearn.model_selection import train_test_split
 from preprocessing.data_names import COLS
@@ -7,7 +9,7 @@ from sklearn.model_selection import KFold, StratifiedKFold, cross_val_score
 from sklearn.metrics import mean_squared_error
 
 
-def split_prediction_and_train(df:'pd.DataFrame'):
+def split_prediction_and_train(df: "pd.DataFrame"):
     """
     Create a validation data set from the original raw data set before feature engineering
     :param df: the raw dataset with all the data
@@ -17,10 +19,12 @@ def split_prediction_and_train(df:'pd.DataFrame'):
     print("...split_prediction_and_train: splitting whole dataset into prediction and train set...")
 
     df_predict = df[df["Dataset"]=="Prediction set"]
+    df_predict=df_predict.drop("Dataset", axis=1)
     df_predict.to_csv("data/predict/input/prediction_set.csv")
     print("prediction set shape: {}".format(df_predict.shape))
 
     df_train = df[df["Dataset"]=="Train set"]
+    df_train=df_train.drop("Dataset", axis=1)
     df_train.to_csv("data/model/df_train_full.csv", index=False)
     print("train set shape: {}".format(df_train.shape))
 
@@ -56,18 +60,18 @@ class random_forest():
             estimator=RandomForestRegressor(),
             param_grid= {
                 'bootstrap': [True, False],
-                'n_estimators': [5, 10],
+                'n_estimators': [5, 10, 15],
                 'criterion': ['gini', 'entropy'],
-                'min_samples_leaf': list(range(1, 12, 4)),
+                'min_samples_leaf': list(range(1, 20, 4)),
                 'max_features': ['sqrt', 'log2']
             },
             cv=StratifiedKFold(n_splits=3),
             verbose=1,
-            scoring="mean_squared_error",
+            scoring="neg_mean_squared_error",
             refit=True)
         self.trained_model = None
 
-    def train(self, X_train:"pd.DataFrame", y_train:"np.ndarray"):
+    def train(self, X_train: "pd.DataFrame", y_train: "np.ndarray"):
 
         self.trained_model = self.grid_search
         self.trained_model.fit(X_train, y_train)
@@ -85,7 +89,7 @@ class random_forest():
 
     def evaluate(self, X_test:"pd.DataFrame", y_test:"np.ndarray"):
         price = self.predict(X_test)
-        score = sklearn.metrics.mean_squared_error(y_test, price)
+        score = math.sqrt(abs(mean_squared_error(y_test, price)))
         print("RMSE on test set: {}".format(score))
 
 

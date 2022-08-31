@@ -46,13 +46,22 @@ if __name__ == '__main__':
     # PREPARE MODELING
     X_train, X_holdout, y_train, y_holdout = prepare_model(df_full)
 
-    print(y_train)
-    print(X_train)
-
-    rfr = RandomForestRegressor()
-    rfr.fit(X_train, y_train)
-    score = rfr.score(X_train, y_train)
-    print("R-squared:", score)
+    grid_search_rf = GridSearchCV(
+        estimator=RandomForestRegressor(),
+        param_grid={
+                    'bootstrap' : [True, False],
+                    'n_estimators' : [5,10],
+                    'criterion' : ['squared_error', 'absolute_error', 'poisson'],
+                    'min_samples_leaf' : list(range(1,12,4)),
+                    'max_features' : ['sqrt', 'log2'],
+                    },
+        cv=StratifiedKFold(n_splits=3),
+        verbose=1,
+        scoring="neg_root_mean_squared_error",
+        refit=True)
+    grid_search_rf.fit(X_train, y_train)
+    print("Random Forest best parameters are:", grid_search_rf.best_params_)
+    print("Random Forest CV is: ", grid_search_rf.best_score_)
 
     # END
     print("END")
