@@ -285,9 +285,6 @@ def deal_with_missing(df: "pd.DataFrame"):
 def data_transformation(df: "pd.DataFrame"):
     print("--- START OF DATA TRANSFORMATION ---")
 
-    # drop ID column
-    df = drop_columns(df, [COLS.ID])
-
     # DEALING WITH DATES
 
     # transform years to age, relative to year of sales

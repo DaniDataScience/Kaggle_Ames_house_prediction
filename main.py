@@ -1,16 +1,10 @@
-import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-from preprocessing.data_names import COLS
 from preprocessing.preparing_datasets import create_full_dataset
 from preprocessing.data_exploration import view_data_distributions
 from preprocessing.data_exploration import view_conditional_mean
 from preprocessing.transformation import deal_with_missing
 from preprocessing.transformation import data_transformation
-from modelling.model_prep import prepare_model
-from sklearn.model_selection import StratifiedKFold
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.model_selection import GridSearchCV
+from modelling.model_prep import prepare_model,fit_random_forest
 
 
 def print_hi(name):
@@ -46,22 +40,9 @@ if __name__ == '__main__':
     # PREPARE MODELING
     X_train, X_holdout, y_train, y_holdout = prepare_model(df_full)
 
-    grid_search_rf = GridSearchCV(
-        estimator=RandomForestRegressor(),
-        param_grid={
-                    'bootstrap' : [True, False],
-                    'n_estimators' : [5,10],
-                    'criterion' : ['squared_error', 'absolute_error', 'poisson'],
-                    'min_samples_leaf' : list(range(1,12,4)),
-                    'max_features' : ['sqrt', 'log2'],
-                    },
-        cv=StratifiedKFold(n_splits=3),
-        verbose=1,
-        scoring="neg_root_mean_squared_error",
-        refit=True)
-    grid_search_rf.fit(X_train, y_train)
-    print("Random Forest best parameters are:", grid_search_rf.best_params_)
-    print("Random Forest CV is: ", grid_search_rf.best_score_)
+    # Random forest
+    fit_random_forest(X_train, y_train, X_holdout, y_holdout, eval_on_holdout=True, feature_importance=True, make_prediction=True)
+
 
     # END
     print("END")
