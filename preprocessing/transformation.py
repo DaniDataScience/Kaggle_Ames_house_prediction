@@ -225,6 +225,16 @@ def refactor_ordinals(df: "pd.DataFrame"):
     return df_refactor
 
 
+def create_new_features(df: "pd.DataFrame"):
+    df_new = df.copy()
+
+    df_new['totalSqFeet'] = df_new['TotalBsmtSF'] + df_new['1stFlrSF'] + df_new['2ndFlrSF']
+    df_new['totalBathroom'] = df_new.FullBath + df_new.BsmtFullBath + 0.5 * (df_new.HalfBath + df_new.BsmtHalfBath)
+
+    return df_new
+
+
+
 def one_hot_encoding(df: "pd.DataFrame", columns:list):
     print("...one_hot_encoding: applying function for one hot encoding of columns {}...".format(columns))
 
@@ -241,7 +251,7 @@ def winsorizing(df, threshold:int=20):
         """
         print("...winsorizing: applying function to limit min and max outliers for all columns")
         df_win = df.copy()
-        for column in COLS.NUMERIC_COLS:
+        for column in COLS.NUMERIC_COLS+COLS.NEW_FEATURES:
             mean_1, std_1 = np.mean(df[column]), np.std(df[column])
             if (np.abs((df[column] - mean_1) / std_1) > threshold).sum() > 0:
                 print(f"column winsorized:{column} number winsorized:",
@@ -257,7 +267,7 @@ def normalizing(df):
     """
     print("...normalizing: applying function to normalize numerical variables")
     df_norm = df.copy()
-    for column in COLS.NUMERIC_COLS+COLS.ORDINAL_COLS:
+    for column in COLS.NUMERIC_COLS+COLS.ORDINAL_COLS+COLS.NEW_FEATURES:
             series_min, series_max = df[column].min(), df[column].max()
             df_norm[column] = df[column].apply(lambda x:
                                                (x-series_min)/(series_max-series_min))
@@ -294,6 +304,9 @@ def data_transformation(df: "pd.DataFrame"):
 
     # refactor ordinals
     df = refactor_ordinals(df)
+
+    # create new features
+    df = create_new_features(df)
 
     # winsorizing
     df = winsorizing(df)

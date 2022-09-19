@@ -4,7 +4,7 @@ from preprocessing.data_exploration import view_data_distributions
 from preprocessing.data_exploration import view_conditional_mean
 from preprocessing.transformation import deal_with_missing
 from preprocessing.transformation import data_transformation
-from modelling.model_prep import prepare_model,fit_random_forest
+from modelling.model_prep import prepare_model, fit_random_forest, fit_XGBoost
 
 
 def print_hi(name):
@@ -41,7 +41,21 @@ if __name__ == '__main__':
     X_train, X_holdout, y_train, y_holdout = prepare_model(df_full)
 
     # Random forest
-    fit_random_forest(X_train, y_train, X_holdout, y_holdout, eval_on_holdout=True, feature_importance=True, make_prediction=True)
+    fit_random_forest(X_train, y_train, X_holdout, y_holdout,
+                      calc_feature_importance=False,
+                      use_feature_importance=True,
+                      do_gridsearch_fitting=False,
+                      eval_on_holdout=False,
+                      visualize_holdout=False,
+                      make_final_prediction=True)
+
+    # XGBoost
+    fit_XGBoost(X_train, y_train, X_holdout, y_holdout,
+                use_feature_importance=False,
+                eval_on_holdout=False,
+                visualize_holdout=False,
+                manual_correction=False,
+                make_final_prediction=False)
 
 
     # END
